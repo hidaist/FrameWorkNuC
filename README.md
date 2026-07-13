@@ -221,6 +221,7 @@ Berikut adalah daftar URL yang digunakan dalam aplikasi beserta fungsinya.
 > - Penghapusan data dilakukan menggunakan parameter `kdhapus`.
 
 # Alur Routing
+```text
 Browser
    │
    ▼
@@ -232,6 +233,7 @@ Route/pages.php        ← baca ?page=
    ├── page=views  ──► Route/views.php   ← baca ?views=
    │
    └── page=controls ──► Route/controls.php ← baca ?controls=
+```
 
 # Alur MVC
 
