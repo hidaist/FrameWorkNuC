@@ -109,29 +109,71 @@ http://localhost/frameworkbyDMZ
 
 # Struktur Folder
 
+Struktur folder frameworkbyDMZ menggunakan konsep **MVC (Model - View - Controller)** dengan pemisahan antara aplikasi (`App`) dan library pendukung (`Librari`).
+
 ```text
 frameworkbyDMZ/
 │
-├── index.php              # Entry point & layout utama
+├── index.php                    # Entry point aplikasi
 │
-├── Route/                 # Sistem routing
-│   ├── pages.php          # Router utama (?page=...)
-│   ├── views.php          # Router tampilan (?views=...)
-│   └── controls.php       # Router controller (?controls=...)
+├── App/                         # Folder utama aplikasi
+│   │
+│   ├── Auth/                    # Authentication & Authorization
+│   │   ├── AuthController.php   # Proses login, logout
+│   │   ├── AuthModel.php        # Query user dan autentikasi
+│   │   ├── Session.php          # Pengelolaan session
+│   │   ├── Token.php            # Token API (opsional)
+│   │   └── Middleware.php       # Cek login dan hak akses
+│   │
+│   ├── Controls/                # Controller aplikasi
+│   │   └── data.control.php     # Proses CRUD data
+│   │
+│   ├── Models/                  # Model akses database
+│   │   └── data.model.php       # Fungsi query tabel tb_data
+│   │
+│   ├── Views/                   # Tampilan aplikasi
+│   │   │
+│   │   ├── auth/
+│   │   │   └── login.view.php   # Halaman login
+│   │   │
+│   │   ├── dashboard/
+│   │   │   └── dashboard.view.php
+│   │   │
+│   │   ├── data.view.php        # Halaman list data
+│   │   └── data.form.php        # Form tambah & edit
+│   │
+│   └── Route/                   # Sistem routing aplikasi
+│       ├── pages.php            # Router utama (?page=...)
+│       ├── views.php            # Router tampilan
+│       └── controls.php         # Router controller
 │
-├── Views/                 # Tampilan (HTML/PHP)
-│   ├── data.view.php      # Halaman list data
-│   └── data.form.php      # Form tambah & edit (partial)
+├── Librari/                     # Library dan konfigurasi umum
+│   │
+│   ├── inc.koneksi.php          # Konfigurasi koneksi database
+│   ├── helper.php               # Fungsi bantuan
+│   └── response.php             # Response JSON API
 │
-├── Controls/              # Controller (logika proses)
-│   └── data.control.php   # Proses CRUD data
+├── Assets/                      # File pendukung frontend
+│   ├── css/
+│   ├── js/
+│   └── images/
 │
-├── Models/                # Model (akses database)
-│   └── data.model.php     # Fungsi query tb_data
-│
-└── Librari/               # Library & utilitas
-    └── inc.koneksi.php    # Konfigurasi koneksi database
+└── README.md
 ```
+```
+MVC + Routing + Authentication
+```
+
+Pembagian fungsi:
+
+| Folder | Fungsi |
+|--------|--------|
+| `App/Auth` | Menangani login, logout, session, token, dan hak akses |
+| `App/Controls` | Menangani proses bisnis aplikasi |
+| `App/Models` | Menangani komunikasi dengan database |
+| `App/Views` | Menampilkan halaman HTML/PHP |
+| `App/Route` | Mengatur jalur request aplikasi |
+| `Librari` | Menyimpan fungsi umum dan konfigurasi |
 
 ---
 
@@ -139,30 +181,37 @@ frameworkbyDMZ/
 
 Semua request masuk melalui **index.php** kemudian diteruskan ke **Route/pages.php**.
 
-```
 Browser
-      │
-      ▼
- index.php
-      │
-      ▼
- Route/pages.php
-      │
-      ├──────── page=views
-      │               │
-      │               ▼
-      │        Route/views.php
-      │               │
-      │               ▼
-      │        Views/*.view.php
-      │
-      └──────── page=controls
-                      │
-                      ▼
-             Route/controls.php
-                      │
-                      ▼
-             Controls/*.control.php
+   │
+   ▼
+index.php
+   │
+   ▼
+App/Route/pages.php
+   │
+   │
+   ├── page=views
+   │       │
+   │       ▼
+   │   App/Route/views.php
+   │       │
+   │       ▼
+   │   App/Views/
+   │
+   │
+   └── page=controls
+           │
+           ▼
+       App/Route/controls.php
+           │
+           ▼
+       App/Controls/
+           │
+           ▼
+       App/Models/
+           │
+           ▼
+       Database
 ```
 
 ---
@@ -228,7 +277,7 @@ Browser
 index.php
    │
    ▼
-Route/pages.php        ← baca ?page=
+App/Route/pages.php        ← baca ?page=
    │
    ├── page=views  ──► Route/views.php   ← baca ?views=
    │
@@ -258,13 +307,21 @@ URL
 ?page=views&views=dataViews
 ```
 
-Flow
+Flow:
 
 ```
-View
-    ↓
-getAllData()
-    ↓
+Browser
+    │
+    ▼
+Route/views.php
+    │
+    ▼
+Views/data.view.php
+    │
+    ▼
+Models/data.model.php
+    │
+    ▼
 Database
 ```
 
@@ -394,7 +451,7 @@ Berikut langkah-langkah untuk menambahkan modul baru pada aplikasi. Sebagai cont
 Buat file:
 
 ```text
-Models/user.model.php
+App/Models/user.model.php
 ```
 
 Tambahkan fungsi yang dibutuhkan, misalnya:
@@ -418,7 +475,7 @@ function getUserById($koneksi, $id) { ... }
 Buat file:
 
 ```text
-Views/user.view.php
+App/Views/user.view.php
 ```
 
 File ini digunakan untuk menampilkan daftar data User.
@@ -430,7 +487,7 @@ File ini digunakan untuk menampilkan daftar data User.
 Buat file:
 
 ```text
-Views/user.form.php
+App/Views/user.form.php
 ```
 
 File ini digunakan sebagai form **Tambah** dan **Edit** User.
@@ -442,7 +499,7 @@ File ini digunakan sebagai form **Tambah** dan **Edit** User.
 Buat file:
 
 ```text
-Controls/user.control.php
+App/Controls/user.control.php
 ```
 
 Controller bertugas memproses:
@@ -460,7 +517,7 @@ Controller bertugas memproses:
 Tambahkan pada file:
 
 ```text
-Route/views.php
+AppRoute/views.php
 ```
 
 ```php
@@ -474,7 +531,7 @@ case 'userViews':
 Tambahkan pada file:
 
 ```text
-Route/controls.php
+App/Route/controls.php
 ```
 
 ```php
@@ -495,35 +552,29 @@ Tambahkan menu pada file `index.php`.
 
 ---
 
-# Fungsi Model yang Tersedia
+# Konvensi Penamaan
 
-| Fungsi | Deskripsi |
-|---------|-----------|
-| `tambahData()` | Menambahkan data baru ke tabel `tb_data`. |
-| `updateData()` | Mengubah data berdasarkan `id_data`. |
-| `hapusData()` | Menghapus data berdasarkan `id_data`. |
-| `getAllData()` | Mengambil seluruh data dari tabel. |
-| `getDataById()` | Mengambil satu data berdasarkan `id_data`. |
+| Jenis | Lokasi | Format | Contoh |
+|------|--------|--------|--------|
+| View | `App/Views` | modul.view.php | data.view.php |
+| Form | `App/Views` | modul.form.php | data.form.php |
+| Controller | `App/Controls` | modul.control.php | data.control.php |
+| Model | `App/Models` | modul.model.php | data.model.php |
+| Auth | `App/Auth` | NamaClass.php | AuthController.php |
 
 ---
 
-## Struktur Modul
+# Fungsi Model Dasar
 
-```text
-Models/
-└── user.model.php
+| Fungsi | Deskripsi |
+|--------|-----------|
+| `tambahData()` | Menambah data baru |
+| `updateData()` | Mengubah data berdasarkan ID |
+| `hapusData()` | Menghapus data berdasarkan ID |
+| `getAllData()` | Mengambil semua data |
+| `getDataById()` | Mengambil data berdasarkan ID |
 
-Views/
-├── user.view.php
-└── user.form.php
 
-Controls/
-└── user.control.php
-
-Route/
-├── views.php
-└── controls.php
-```
 
 ---
 
