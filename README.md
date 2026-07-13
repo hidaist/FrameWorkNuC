@@ -180,7 +180,7 @@ Pembagian fungsi:
 # Cara Kerja Routing
 
 Semua request masuk melalui **index.php** kemudian diteruskan ke **Route/pages.php**.
-
+```
 Browser
    │
    ▼
