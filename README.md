@@ -220,6 +220,19 @@ Berikut adalah daftar URL yang digunakan dalam aplikasi beserta fungsinya.
 > - URL untuk **Tambah** dan **Simpan** menggunakan endpoint yang sama (`dataControl`) dengan metode **POST**.
 > - Penghapusan data dilakukan menggunakan parameter `kdhapus`.
 
+# Alur Routing
+Browser
+   │
+   ▼
+index.php
+   │
+   ▼
+Route/pages.php        ← baca ?page=
+   │
+   ├── page=views  ──► Route/views.php   ← baca ?views=
+   │
+   └── page=controls ──► Route/controls.php ← baca ?controls=
+
 # Alur MVC
 
 ## 1. Menampilkan Data
@@ -332,25 +345,29 @@ URL
 # Diagram MVC
 
 ```text
-┌──────────────┐
-│   Browser    │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│   Routing    │
-└──────┬───────┘
-       │
- ┌─────┴────────────┐
- ▼                  ▼
-View           Controller
- │                  │
- └────────┬─────────┘
-          ▼
-        Model
-          │
-          ▼
-      MySQL Database
+┌─────────────┐     GET      ┌──────────────┐     include     ┌─────────────┐
+│   Browser   │ ──────────►  │  Route/      │ ──────────────► │   Views/    │
+│             │              │  views.php   │                 │ data.view   │
+└─────────────┘              └──────────────┘                 └──────┬──────┘
+       │                                                             │
+       │ POST (submit/update)                                        │ include
+       ▼                                                             ▼
+┌─────────────┐              ┌──────────────┐                 ┌─────────────┐
+│   Browser   │ ──────────►  │  Route/      │ ──────────────► │   Views/    │
+│             │              │  controls.php│                 │ data.form   │
+└─────────────┘              └──────┬───────┘                 └─────────────┘
+                                    │
+                                    ▼
+                             ┌──────────────┐     query       ┌─────────────┐
+                             │  Controls/   │ ──────────────► │   Models/   │
+                             │ data.control │                 │ data.model  │
+                             └──────────────┘                 └──────┬──────┘
+                                                                      │
+                                                                      ▼
+                                                               ┌─────────────┐
+                                                               │   MySQL     │
+                                                               │  tb_data    │
+                                                               └─────────────┘
 ```
 
 ---
@@ -368,50 +385,81 @@ View           Controller
 
 # Menambah Modul Baru
 
-Misalnya membuat modul **User**.
+Berikut langkah-langkah untuk menambahkan modul baru pada aplikasi. Sebagai contoh, akan dibuat modul **User**.
 
-## 1. Model
+## 1. Membuat Model
 
-```
+Buat file:
+
+```text
 Models/user.model.php
 ```
 
+Tambahkan fungsi yang dibutuhkan, misalnya:
+
 ```php
-function getAllUser($koneksi) {}
-function tambahUser($koneksi) {}
-function updateUser($koneksi) {}
-function hapusUser($koneksi) {}
+function getAllUser($koneksi) { ... }
+
+function tambahUser($koneksi, ...) { ... }
+
+function updateUser($koneksi, ...) { ... }
+
+function hapusUser($koneksi, $id) { ... }
+
+function getUserById($koneksi, $id) { ... }
 ```
 
 ---
 
-## 2. View
+## 2. Membuat View
 
-```
+Buat file:
+
+```text
 Views/user.view.php
 ```
 
+File ini digunakan untuk menampilkan daftar data User.
+
 ---
 
-## 3. Form
+## 3. Membuat Form
 
-```
+Buat file:
+
+```text
 Views/user.form.php
 ```
 
+File ini digunakan sebagai form **Tambah** dan **Edit** User.
+
 ---
 
-## 4. Controller
+## 4. Membuat Controller
 
-```
+Buat file:
+
+```text
 Controls/user.control.php
 ```
 
+Controller bertugas memproses:
+
+- Tambah data
+- Update data
+- Hapus data
+
 ---
 
-## 5. Tambahkan Routing
+## 5. Menambahkan Route
 
-### Route/views.php
+### Route View
+
+Tambahkan pada file:
+
+```text
+Route/views.php
+```
 
 ```php
 case 'userViews':
@@ -419,7 +467,13 @@ case 'userViews':
     break;
 ```
 
-### Route/controls.php
+### Route Controller
+
+Tambahkan pada file:
+
+```text
+Route/controls.php
+```
 
 ```php
 case 'userControl':
@@ -429,27 +483,74 @@ case 'userControl':
 
 ---
 
-## 6. Tambahkan Menu
+## 6. Menambahkan Menu
 
-```php
-<a href="?page=views&views=userViews">
-    User
-</a>
+Tambahkan menu pada file `index.php`.
+
+```html
+<a href="?page=views&views=userViews">User</a>
 ```
 
 ---
 
-# Fungsi Model
+# Fungsi Model yang Tersedia
 
 | Fungsi | Deskripsi |
 |---------|-----------|
-| `tambahData()` | Menambah data |
-| `updateData()` | Mengubah data |
-| `hapusData()` | Menghapus data |
-| `getAllData()` | Mengambil seluruh data |
-| `getDataById()` | Mengambil data berdasarkan ID |
+| `tambahData()` | Menambahkan data baru ke tabel `tb_data`. |
+| `updateData()` | Mengubah data berdasarkan `id_data`. |
+| `hapusData()` | Menghapus data berdasarkan `id_data`. |
+| `getAllData()` | Mengambil seluruh data dari tabel. |
+| `getDataById()` | Mengambil satu data berdasarkan `id_data`. |
 
 ---
+
+## Struktur Modul
+
+```text
+Models/
+└── user.model.php
+
+Views/
+├── user.view.php
+└── user.form.php
+
+Controls/
+└── user.control.php
+
+Route/
+├── views.php
+└── controls.php
+```
+
+---
+
+## Alur Modul
+
+```text
+Menu
+  │
+  ▼
+Route/views.php
+  │
+  ▼
+user.view.php
+  │
+  ▼
+user.form.php
+  │
+  ▼
+Route/controls.php
+  │
+  ▼
+user.control.php
+  │
+  ▼
+user.model.php
+  │
+  ▼
+Database
+```
 
 # Pengembangan
 
