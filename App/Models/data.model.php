@@ -1,5 +1,5 @@
 <?php
-include_once __DIR__. "/../Librari/inc.koneksi.php";
+include_once __DIR__. "/../../Librari/inc.koneksi.php";
 
 // Add data ke database
 function tambahData($koneksi, $idData, $data1, $data2) {

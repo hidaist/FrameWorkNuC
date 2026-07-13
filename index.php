@@ -84,7 +84,7 @@
 
 <div class="content">
 <?php 
-include_once __DIR__ . "/Route/pages.php";
+include_once __DIR__ . "/App/Route/pages.php";
 ?>
 </div>
 
