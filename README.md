@@ -6,11 +6,27 @@ Framework MVC sederhana berbasis **PHP Native** dengan struktur **Model - View -
 
 ## Fitur
 
-- CRUD Data
-- Struktur MVC sederhana
-- Routing berbasis URL
-- Mudah dikembangkan menjadi modul baru
-- Cocok untuk pembelajaran PHP Native
+- Arsitektur **MVC** yang jelas dan terpisah
+- **Routing berbasis query string** (`?page=...`)
+- CRUD data sederhana (Create, Read, Update, Delete)
+- Form reusable — satu file form untuk tambah & edit
+- Koneksi database terpusat
+- Ringan, tanpa Composer atau framework pihak ketiga
+---
+## Tech Stack
+| Komponen      | Teknologi                    |
+|---------------|------------------------------|
+| Bahasa        | PHP (Native)                 |
+| Database      | MySQL / MariaDB              |
+| Arsitektur    | MVC (Custom)                 |
+| Web Server    | Apache / Nginx (via Laragon) |
+| Koneksi DB    | MySQLi                       |
+---
+## Persyaratan
+- PHP 8.0 atau lebih baru
+- MySQL / MariaDB
+- Apache atau Nginx
+- [Laragon](https://laragon.org/) (disarankan) atau XAMPP
 
 ---
 
@@ -40,6 +56,8 @@ C:\laragon\www\frameworkbyDMZ
 ```sql
 CREATE DATABASE frameworkbydmz;
 USE frameworkbydmz;
+
+
 ```
 
 ### Buat Tabel
@@ -94,25 +112,25 @@ http://localhost/frameworkbyDMZ
 ```text
 frameworkbyDMZ/
 │
-├── index.php                  # Entry point aplikasi
+├── index.php              # Entry point & layout utama
 │
-├── Route/
-│   ├── pages.php              # Router utama
-│   ├── views.php              # Router View
-│   └── controls.php           # Router Controller
+├── Route/                 # Sistem routing
+│   ├── pages.php          # Router utama (?page=...)
+│   ├── views.php          # Router tampilan (?views=...)
+│   └── controls.php       # Router controller (?controls=...)
 │
-├── Views/
-│   ├── data.view.php          # Halaman data
-│   └── data.form.php          # Form tambah/edit
+├── Views/                 # Tampilan (HTML/PHP)
+│   ├── data.view.php      # Halaman list data
+│   └── data.form.php      # Form tambah & edit (partial)
 │
-├── Controls/
-│   └── data.control.php       # Controller CRUD
+├── Controls/              # Controller (logika proses)
+│   └── data.control.php   # Proses CRUD data
 │
-├── Models/
-│   └── data.model.php         # Query database
+├── Models/                # Model (akses database)
+│   └── data.model.php     # Fungsi query tb_data
 │
-└── Librari/
-    └── inc.koneksi.php        # Koneksi database
+└── Librari/               # Library & utilitas
+    └── inc.koneksi.php    # Konfigurasi koneksi database
 ```
 
 ---
@@ -149,33 +167,58 @@ Browser
 
 ---
 
-# Format URL
+# Dokumentasi URL Parameter
 
-## Menampilkan Halaman
+Berikut adalah daftar URL yang digunakan dalam aplikasi beserta fungsinya.
 
-```
+| URL | Fungsi |
+|-----|---------|
+| `?page=views&views=dataViews` | Menampilkan halaman data (List Data). |
+| `?page=controls&controls=dataControl` | Memproses data dari form menggunakan metode **POST** (Tambah/Simpan Data). |
+| `?page=controls&controls=dataControl&kdhapus=ID` | Menghapus data berdasarkan **ID**. |
+| `?page=views&views=dataViews&idData=ID` | Menampilkan form dalam mode **Edit** berdasarkan **ID**. |
+
+## Keterangan Parameter
+
+| Parameter | Deskripsi |
+|-----------|-----------|
+| `page` | Menentukan jenis halaman yang akan dipanggil. |
+| `views` | Menentukan file tampilan (View). |
+| `controls` | Menentukan file Controller yang memproses aksi. |
+| `idData` | ID data yang akan diedit. |
+| `kdhapus` | ID data yang akan dihapus. |
+
+## Contoh Penggunaan
+
+### Menampilkan Data
+
+```text
 ?page=views&views=dataViews
 ```
 
-## Proses Form
+### Menyimpan Data (POST)
 
-```
+```text
 ?page=controls&controls=dataControl
 ```
 
-## Hapus Data
+### Mengedit Data
 
-```
-?page=controls&controls=dataControl&kdhapus=ID
-```
-
-## Edit Data
-
-```
-?page=views&views=dataViews&idData=ID
+```text
+?page=views&views=dataViews&idData=5
 ```
 
----
+### Menghapus Data
+
+```text
+?page=controls&controls=dataControl&kdhapus=5
+```
+
+> **Catatan**
+>
+> - Ganti nilai `ID` dengan ID data yang sesuai.
+> - URL untuk **Tambah** dan **Simpan** menggunakan endpoint yang sama (`dataControl`) dengan metode **POST**.
+> - Penghapusan data dilakukan menggunakan parameter `kdhapus`.
 
 # Alur MVC
 
