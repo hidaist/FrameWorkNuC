@@ -8,7 +8,7 @@ if (isset($_GET['idData'])) {
     $kdedit = getDataById($koneksi, $idData);
 }
 ?>
-<form method="post" action="?page=controls&controls=dataControl">
+<form method="post" action="?page=controls&controls=dataControl" class="data-form">
     <input 
         type="text" 
         name="idData" 
