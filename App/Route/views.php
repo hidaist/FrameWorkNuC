@@ -13,5 +13,13 @@ switch ($file) {
                         include $file_path;
                         break;
 
+                case 'login':
+                        $file_path = __DIR__ . "/../Views/login.view.php";
+                        if (!file_exists($file_path)) {
+                            die("login view tidak ada");
+                        }
+                        include $file_path;
+                        break;
+
 }
 ?>

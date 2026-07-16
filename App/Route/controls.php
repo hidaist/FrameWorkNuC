@@ -13,5 +13,13 @@ switch ($file) {
                         include $file_path;
                         break;
 
+                case 'loginControl':
+                        $file_path = __DIR__ . "/../Controls/login.control.php";
+                        if (!file_exists($file_path)) {
+                            die("login control tidak ada");
+                        }
+                        include $file_path;
+                        break;
+
 }
 ?>

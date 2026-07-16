@@ -1,5 +1,5 @@
 <?php
-
+include_once __DIR__ . "/../../Librari/inc.koneksi.php";
 include_once __DIR__ . "/../Models/data.model.php"; // file berisi data model function
 
 // SUBMIT
