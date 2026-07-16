@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS `tb_data` (
   PRIMARY KEY (`id_data`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
--- Data exporting was unselected.
+-- Dumping data for table frameworkbydmz.tb_data: ~4 rows (approximately)
+INSERT INTO `tb_data` (`id_data`, `data_1`, `data_2`) VALUES
+	('22222', 'Byan', 'Mantap13');
 
 -- Dumping structure for table frameworkbydmz.tb_user
 CREATE TABLE IF NOT EXISTS `tb_user` (
@@ -41,7 +43,9 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
--- Data exporting was unselected.
+-- Dumping data for table frameworkbydmz.tb_user: ~0 rows (approximately)
+INSERT INTO `tb_user` (`id_user`, `username`, `password`, `nama`, `role`, `created_at`) VALUES
+	(1, 'admin', '$2y$10$j/u5e9HaqK9vkhPqf3wK1.w9wTSGP2eLCKPXNtzNyQzYKb68yE9mu', 'Administrator', 'admin', '2026-07-14 04:14:17');
 
 -- Dumping structure for table frameworkbydmz.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -55,7 +59,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 
--- Data exporting was unselected.
+-- Dumping data for table frameworkbydmz.users: ~2 rows (approximately)
+INSERT INTO `users` (`id`, `username`, `password`, `nama_lengkap`, `level`, `created_at`) VALUES
+	(1, 'admin', '$2y$10$h4ssGo1Enz/JkpOO1pCsWeNZhxP90qZ1oUudLwzyLYESN940Lf202', 'Administrator', 'admin', '2026-07-16 05:38:12'),
+	(2, 'user', '$2y$10$fhw2CcPj47OSTM2PYjDWqew/P6zzvzxTaUPXLahBkk0e3gJNvlrBC', 'Pengguna Biasa', 'user', '2026-07-16 05:38:12');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
