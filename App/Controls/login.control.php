@@ -4,14 +4,19 @@ include_once __DIR__ . "/../Models/login.model.php";
 
 session_start();
 
-// Proses Login
-if (isset($_POST['login'])) {
-    $username = $_POST['username'];
+// Proses login
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
 
     $user = cekLogin($koneksi, $username, $password);
 
     if ($user) {
+
+        // Mencegah Session Fixation
+        session_regenerate_id(true);
+
         $_SESSION['user_login'] = [
             'id'           => $user['id'],
             'username'     => $user['username'],
@@ -19,28 +24,20 @@ if (isset($_POST['login'])) {
             'level'        => $user['level']
         ];
 
-        // Redirect sesuai level user
+        // Redirect sesuai level
         if ($user['level'] === 'admin') {
-            $redirect = 'Dashboard/admin/index.php';
+            header("Location: Dashboard/admin/index.php");
         } else {
-            $redirect = 'Dashboard/user/index.php';
+            header("Location: Dashboard/user/index.php");
         }
 
-        echo "<script>
-            alert('Login berhasil! Selamat datang, " . $user['nama_lengkap'] . "');
-            document.location='" . $redirect . "';
-        </script>";
         exit();
     } else {
-        echo "<script>
-            alert('Username atau password salah!');
-            document.location='index.php?page=views&views=login';
-        </script>";
-        exit();
+        $error = "Username atau password salah!";
     }
 }
 
-// Proses Logout
+// Logout
 if (isset($_GET['logout'])) {
     logout();
 }

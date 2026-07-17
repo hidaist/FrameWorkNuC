@@ -1,33 +1,7 @@
 <?php
 session_start();
-
-// Proses logout - HARUS sebelum redirect login
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: index.php");
-    exit();
-}
-
-// Jika sudah login dan mengakses halaman utama, redirect ke dashboard sesuai level
-if (isset($_SESSION['user_login'])) {
-    $level = $_SESSION['user_login']['level'];
-    if ($level === 'admin') {
-        header("Location: Dashboard/admin/index.php");
-    } else {
-        header("Location: Dashboard/user/index.php");
-    }
-    exit();
-}
-
-// Routing untuk proses data (submit, update, delete) via page=controls&controls=dataControl
-$page = isset($_GET['page']) ? $_GET['page'] : '';
-$controls = isset($_GET['controls']) ? $_GET['controls'] : '';
-
-if ($page === 'controls' && $controls === 'dataControl') {
-    include_once __DIR__ . "/Librari/inc.koneksi.php";
-    include_once __DIR__ . "/App/Controls/data.control.php";
-    exit();
-}
+include_once __DIR__ . "/App/Route/pages.php";
+/*
 
 // Proses login via POST dari form
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
@@ -63,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $error = "Username atau password salah!";
     }
 }
-
+*/
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -199,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             <div class="alert-error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="">
+        <form method="POST" action="?page=controls&controls=loginControl">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Masukkan username" required autofocus>
